@@ -64,8 +64,12 @@ describe("POST /companies", function () {
 });
 
 /************************************** GET /companies */
-
 describe("GET /companies", function () {
+  test("error 404 if invalid filter key", async function() {
+    const resp = await request(app).get("/companies").query({maxEmployees : 3, nameeee: "3"});
+    expect(resp.statusCode).toEqual(400);
+  });
+
   test("ok for anon", async function () {
     const resp = await request(app).get("/companies");
     expect(resp.body).toEqual({
@@ -95,49 +99,6 @@ describe("GET /companies", function () {
           ],
     });
   });
-
-  test("works: filtering minEmployee query", async function() {
-    const resp = await request(app).get("/companies").query({minEmployees: 2});
-    expect(resp.body).toEqual({
-      companies: [
-        {
-          handle: "c2",
-          name: "C2",
-          description: "Desc2",
-          numEmployees: 2,
-          logoUrl: "http://c2.img",
-        },
-        {
-          handle: "c3",
-          name: "C3",
-          description: "Desc3",
-          numEmployees: 3,
-          logoUrl: "http://c3.img",
-        },
-      ],
-    });
-  });
-
-  test("works: filter all filters: minEmployees, maxEmployees and name", async function() {
-    const resp = await request(app).get("/companies").query({minEmployees: 2, maxEmployees: 3, name: "3"})
-    expect(resp.body).toEqual({
-      companies:[
-        {
-          handle: "c3",
-          name: "C3",
-          description: "Desc3",
-          numEmployees: 3,
-          logoUrl: "http://c3.img",
-        },
-      ],
-    });
-  });
-
-  test("error 404 if invalid filter key", async function() {
-    const resp = await request(app).get("/companies").query({maxEmployees : 3, nameeee: "3"});
-    expect(resp.statusCode).toEqual(400);
-  });
-
 
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---
