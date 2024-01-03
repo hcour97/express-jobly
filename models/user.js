@@ -139,6 +139,8 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
+    // ADD USER JOB APPLICATION INFORMATION HERE!
+
     return user;
   }
 
