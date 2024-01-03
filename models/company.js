@@ -50,25 +50,27 @@ class Company {
    * */
 
   static async findAll(filters={}) {
-    const { minEmployees, maxEmployees, name } = filters;
-    const companiesQuery = 
+    
+    let companiesQuery = 
           `SELECT handle,
                   name,
                   description,
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
            FROM companies`;
-
+    const { minEmployees, maxEmployees, name } = filters;
     let whereExpressions = [];
     let queryValues = [];
 
     if (minEmployees > maxEmployees) {
       throw new BadRequestError("Min Employees must be smaller than Max Employees. Please try again.")
     }
+
     if (maxEmployees !== undefined) {
       queryValues.push(maxEmployees);
       whereExpressions.push(`num_employees <= $${queryValues.length}`);
     }
+
     if (minEmployees !== undefined) {
       queryValues.push(minEmployees);
       whereExpressions.push(`num_employees >= $${queryValues.length}`);
@@ -79,11 +81,11 @@ class Company {
     }
 
     if (whereExpressions.length > 0) {
-      query += " WHERE " + whereExpressions.join(" AND ");
+      companiesQuery += " WHERE " + whereExpressions.join(" AND ");
     }
 
-    query += " ORDER BY name ";
-    const companiesRes = await db.query(query, queryValues);
+    companiesQuery += " ORDER BY name ";
+    const companiesRes = await db.query(companiesQuery, queryValues);
     return companiesRes.rows;
 
   };
