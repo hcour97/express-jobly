@@ -63,17 +63,6 @@ function ensureAdmin(req, res, next) {
  * If not, raises Unauthorized.
  */
 
-  // function ensureAdminOrCorrectUser(req, res, next) {
-  //   try {
-  //     const user = res.locals.user;
-  //     if (!(user && (user.isAdmin || user.username === req.params.username ))) {
-  //       throw new UnauthorizedError();
-  //     }
-  //     return next()
-  //   } catch (err) {
-  //   return next(err)
-  //   }
-  // }
 
   function ensureAdminOrCorrectUser(req, res, next) {
     try {
