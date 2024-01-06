@@ -14,6 +14,7 @@ const {
   u1Token,
   u2Token,
   adminToken,
+  testJobIds,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -200,6 +201,7 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        applications: [testJobIds[0]],
       },
     });
   });
@@ -215,7 +217,7 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
-        // applications: [testJobIds[0]],
+        applications: [ testJobIds[0]],
       },
     });
   });
@@ -377,3 +379,34 @@ describe("DELETE /users/:username", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+
+
+/************************************** POST /users/:username/jobs/:id */
+describe("POST /users/:username/jobs/:id", function () {
+  test("works: admin", async function () {
+    const resp = await request(app)
+        .post(`/users/u1/jobs/${testJobIds[2]}`)
+        .set("authorization", `Bearer ${adminToken}`);
+        expect(resp.body).toEqual({ applied: testJobIds[2] });
+  });
+  test("works: same user", async function () {
+    const resp = await request(app)
+        .post(`/users/u1/jobs/${testJobIds[2]}`)
+        .set("authorization", `Bearer ${u1Token}`);
+        expect(resp.body).toEqual({ applied: testJobIds[2] });
+  });
+
+  test("unauth for anon", async function () {
+    const resp = await request(app)
+        .post(`/users/u1/jobs/${testJobIds[2]}`)
+    expect(resp.statusCode).toEqual(401);
+  })
+
+  test("unauth for diff user", async function () {
+    const resp = await request(app)
+        .post(`/users/u1/jobs/${testJobIds[2]}`)
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  })
+
+})

@@ -130,19 +130,23 @@ class User {
                   last_name AS "lastName",
                   email,
                   is_admin AS "isAdmin"
-           FROM users
-           WHERE username = $1`,
-        [username],
-    );
+          FROM users
+          WHERE username = $1`,
+    [username],
+);
 
     const user = userRes.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
-    // ADD USER JOB APPLICATION INFORMATION HERE!
+    const userApplicationsRes = await db.query(
+          `SELECT a.job_id
+          FROM applications AS a
+          WHERE a.username = $1`, [username]);
 
+    user.applications = userApplicationsRes.rows.map(a => a.job_id);
     return user;
-  }
+}
 
   /** Update user data with `data`.
    *
@@ -205,6 +209,33 @@ class User {
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
+  }
+
+  /** Apply for job. Update db, returns undefined.
+   * - username (for applying to job)
+   * -jobId (which job user is applying for)
+   */
+
+  static async applyToJob(username, jobId) {
+    const checkJobId = await db.query(
+      `SELECT id
+       FROM jobs
+       where id=$1`, [jobId]);
+    const job = checkJobId.rows[0];
+
+    if (!job) throw new NotFoundError(`No job found: ${jobId}`);
+
+    const checkUser = await db.query(
+      `SELECT username
+       FROM users
+       where username=$1`, [username]);
+    const user = checkUser.rows[0];
+
+    if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    await db.query(
+      `INSERT INTO applications (job_id, username)
+      VALUES ($1, $2)`, [jobId, username]);
   }
 }
 
