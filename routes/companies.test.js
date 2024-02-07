@@ -127,11 +127,29 @@ describe("GET /companies/:handle", function () {
     const resp = await request(app).get(`/companies/c1`);
     expect(resp.body).toEqual({
       company: {
-        handle: "c1",
-        name: "C1",
         description: "Desc1",
-        numEmployees: 1,
+        handle: "c1",
+        jobs: [{
+          equity: "0.1",
+          id: typeof(Number),
+          salary: 1,
+          title: "J1"
+        },
+        {
+          equity: "0.2",
+          id: typeof(Number),
+          salary: 2,
+          title: "J2"
+        },
+          {
+          equity: null,
+          id: typeof(Number),
+          salary: 3,
+          title: "J3"
+        }],
         logoUrl: "http://c1.img",
+        name: "C1",
+        numEmployees: 1,
       },
     });
   });
@@ -143,6 +161,7 @@ describe("GET /companies/:handle", function () {
         handle: "c2",
         name: "C2",
         description: "Desc2",
+        jobs: [],
         numEmployees: 2,
         logoUrl: "http://c2.img",
       },

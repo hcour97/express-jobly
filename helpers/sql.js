@@ -5,9 +5,9 @@ const { BadRequestError } = require("../expressError");
  * The calling function uses it to make a SET clause for the SQL command UPDATE.
  * 
  * @param dataToUpdate {Object} {field1: newVal, field2: newVal, ...}
- * @param jsToSQL {Object} {matches the js-style input to database column names.}
+ * @param jsToSQL {Object} {matches js-style input to database column names.}
  *        i.e. {firstName: "first_name", age: "age"}
- * @returns {Object} {setCols, values}
+ * @returns an Object {setCols, values}
  * 
  * @example {firstName: 'Aliya', age: 32} => { setCols:'"first_name"=$1', '"age"=$2', values: ["Aliya", "32"] }
  */

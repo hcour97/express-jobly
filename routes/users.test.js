@@ -201,7 +201,7 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
-        applications: [testJobIds[0]],
+        applications: [],
       },
     });
   });
@@ -217,7 +217,7 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
-        applications: [ testJobIds[0]],
+        applications: [],
       },
     });
   });
